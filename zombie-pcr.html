@@ -342,10 +342,11 @@
         function drawGelAnalysisResult() { const gelX = canvas.width / 2 - 150, gelY = 20, gelW = 300, gelH = 160; const wellY = gelY + 10, wellW = 20, wellH = 15; const ladderLaneX = gelX + 30 + 0 * (wellW + 20); const sampleLaneX = gelX + 30 + 2 * (wellW + 20); ctx.strokeStyle = 'lime'; ctx.strokeRect(gelX, gelY, gelW, gelH); ctx.fillStyle = '#222'; ctx.fillRect(gelX + 1, gelY + 1, gelW - 2, gelH - 2); ctx.fillStyle = '#000'; for (let i = 0; i < 5; i++) { ctx.fillRect(gelX + 30 + i * (wellW + 20), wellY, wellW, wellH); } ctx.strokeStyle = '#444'; for (let i = 0; i < 5; i++) { const laneX = gelX + 30 + i * (wellW + 20) + wellW / 2; ctx.beginPath(); ctx.moveTo(laneX, wellY + wellH); ctx.lineTo(laneX, gelY + gelH - 10); ctx.stroke(); } ctx.fillStyle = '#0ff'; ctx.font = '10px monospace'; ctx.textAlign = 'left'; ladderBands.forEach(band => { ctx.fillRect(ladderLaneX + 5, band.y, 10, 5); ctx.fillStyle = '#ccc'; ctx.fillText(`${band.bp}bp`, ladderLaneX + 20, band.y + 5); ctx.fillStyle = '#0ff'; }); if (pcrSuccess) { ctx.fillStyle = 'lime'; const bandHeight = 5; const finalBandY = GEL_TARGET_BAND_Y; ctx.fillRect(sampleLaneX + 5, finalBandY, 10, bandHeight); } ctx.fillStyle = 'lime'; ctx.font = '12px monospace'; ctx.textAlign = 'center'; ctx.fillText("GEL RESULT - INPUT SIZE & ANALYZE", canvas.width / 2, gelY + gelH + 15); }
         function drawQuizScreen() { ctx.fillStyle = 'lime'; ctx.font = '16px "Press Start 2P"'; ctx.textAlign = 'center'; ctx.fillText("FINAL QUIZ", canvas.width / 2, canvas.height / 2 - 10); ctx.font = '12px monospace'; ctx.fillText("Answer questions below.", canvas.width / 2, canvas.height / 2 + 20); }
         
-        // NEW 8-BIT ENDGAME SCREEN
+        // NEW 8-BIT ENDGAME SCREEN (BUG FIXED)
         function drawGameOverScreen() { 
-            const winThreshold = Math.floor(quizQuestionsArray.length * 0.8); 
-            const playerWon = (quizScore >= winThreshold); 
+            // FIX: Check the actual text readout for "SUCCESS" instead of doing math on an empty array.
+            const resultsText = document.getElementById('quizResults').textContent || "";
+            const playerWon = resultsText.includes("SUCCESS");
             
             const centerX = canvas.width / 2; 
             const centerY = canvas.height / 2 + 10;
@@ -355,7 +356,7 @@
             ctx.textAlign = 'center'; 
             ctx.fillText("MISSION COMPLETE", centerX, 30); 
 
-            if (playerWon && !gameTextDisplay.textContent.includes("OUT OF TIME")) { 
+            if (playerWon) { 
                 ctx.fillStyle = 'yellow'; 
                 ctx.fillText("SUCCESS", centerX, 60); 
                 
